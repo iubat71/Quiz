@@ -1,0 +1,123 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+{% load static %}
+
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{% static "exam.css"%}">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+<div class="container mt-5">
+    <form class="form" autocomplete="off" onsubmit="return saveAns()" action="/student/calculate-marks" method="POST">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-10 col-lg-10">
+                <div class="border">
+                    <div class="question bg-white p-3 border-bottom">
+                        <div class="d-flex flex-row justify-content-between align-items-center mcq">
+                            <h4>{{ course.course_name }}</h4>
+                            <span>(<span id="current-question">1</span> of {{ questions|length }})</span>
+                        </div>
+                    </div>
+                    {% for q in questions %}
+                    <div class="question bg-white p-3 border-bottom question-block" id="question-{{ forloop.counter0 }}" style="{% if not forloop.first %}display:none{% endif %}">
+                        <div class="d-flex flex-row align-items-center question-title">
+                            <h3 class="text-danger">Q.</h3>
+                            <h5 class="mt-1 ml-2">{{ forloop.counter }}. {{ q.question }}</h5>
+                            <h4 style="text-align: right;">[Marks {{ q.marks }}]</h4>
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio">
+                                <input type="radio" name="{{ forloop.counter }}" id="{{ q.option1 }}" value="Option1">
+                                <span>{{ q.option1 }}</span>
+                            </label>
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio">
+                                <input type="radio" name="{{ forloop.counter }}" id="{{ q.option2 }}" value="Option2">
+                                <span>{{ q.option2 }}</span>
+                            </label>
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio">
+                                <input type="radio" name="{{ forloop.counter }}" id="{{ q.option3 }}" value="Option3">
+                                <span>{{ q.option3 }}</span>
+                            </label>
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio">
+                                <input type="radio" name="{{ forloop.counter }}" id="{{ q.option4 }}" value="Option4">
+                                <span>{{ q.option4 }}</span>
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
+                        <button class="btn btn-primary d-flex align-items-center" type="button" onclick="showPrevious()"><i class="fa fa-angle-left mt-1 mr-1"></i>&nbsp;Previous</button>
+                        <button id="submit-button" class="btn btn-info btn-lg" type="submit" style="display:none;">Submit</button>
+                        <button id="next-button" class="btn btn-primary border-success align-items-center" type="button" onclick="showNext()">Next<i class="fa fa-angle-right ml-2"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentQuestion = 0;
+    const totalQuestions = {{ questions|length }};
+    const questionBlocks = document.querySelectorAll('.question-block');
+    const submitButton = document.getElementById('submit-button');
+    const nextButton = document.getElementById('next-button');
+
+    function showQuestion(index) {
+        questionBlocks[currentQuestion].style.display = 'none';
+        currentQuestion = index;
+        questionBlocks[currentQuestion].style.display = 'block';
+        document.getElementById('current-question').innerText = currentQuestion + 1;
+        
+        if (currentQuestion === totalQuestions - 1) {
+            nextButton.style.display = 'none';
+            submitButton.style.display = 'inline-block';
+        } else {
+            nextButton.style.display = 'inline-block';
+            submitButton.style.display = 'none';
+        }
+    }
+
+    function showNext() {
+        if (currentQuestion < totalQuestions - 1) {
+            showQuestion(currentQuestion + 1);
+        }
+    }
+
+    function showPrevious() {
+        if (currentQuestion > 0) {
+            showQuestion(currentQuestion - 1);
+        }
+    }
+
+    function saveAns() {
+        var ele = document.getElementsByTagName('input');
+        for (i = 0; i < ele.length; i++) {
+            if (ele[i].type === "radio") {
+                if (ele[i].checked) {
+                    setCookie(ele[i].name, ele[i].value, 3)
+                }
+            }
+        }
+        return true;
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+</script>
+
+<br><br><br><br><br><br>
+{% endblock content %}

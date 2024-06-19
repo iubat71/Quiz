@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{% static "nav.css" %}">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <style type="text/css">
+    .bs-example {
+      margin: 0px;
+    }
+    .bg-dark {
+      background-color: #212529!important;
+    }
+    .navbar-brand {
+      font-size: 20px;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bs-example">
+    <nav class="navbar navbar-expand-custom navbar-mainbg">
+      <a class="navbar-brand navbar-logo" href="/">Online Quiz</a>
+      <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars text-white"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
+          <li class="nav-item">
+            <a class="nav-link" href="/"><i class=""></i>Home</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/teacher/teacherclick"><i class="fas fa-chalkboard-teacher"></i>Teacher</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="/student/studentclick"><i class="fas fa-user-graduate"></i>Login</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/adminclick"><i></i>Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/aboutus"><i></i>About Us</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="/contactus"><i></i>Contact Us</a>
+          </li>
+          
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    function setActiveLink() {
+      var path = window.location.pathname;
+      if (path === '/') {
+        path = '/';
+      } else {
+        path = path.replace(/\/$/, '');
+      }
+  
+      var target = $('#navbarSupportedContent ul li a[href="' + path + '"]');
+  
+      target.parent().addClass('active');
+  
+      if (target.length) {
+        var itemPos = target.position();
+        var itemWidth = target.innerWidth();
+        var itemHeight = target.innerHeight();
+        $(".hori-selector").css({
+          "top": itemPos.top + "px",
+          "left": itemPos.left + "px",
+          "height": itemHeight + "px",
+          "width": itemWidth + "px"
+        });
+      }
+    }
+  
+    $(document).ready(function () {
+      setActiveLink();
+      setTimeout(function () { test(); });
+    });
+  
+    $(window).on('resize', function () {
+      setTimeout(function () { test(); setActiveLink(); }, 500);
+    });
+  
+    $(".navbar-toggler").click(function () {
+      $(".navbar-collapse").slideToggle(300);
+      setTimeout(function () { test(); });
+    });
+  </script>
+  
+  
+</body>
+</html>
